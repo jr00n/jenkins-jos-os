@@ -1,0 +1,2 @@
+In this directory you can add extra Jenkins configuration. 
+The S2I scripts in the Jenkins S2I image wil use this directory
