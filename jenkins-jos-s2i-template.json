@@ -1,0 +1,261 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "jenkins-jos-s2i"
+  },
+  "objects": [
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "jenkins-jos-s2i",
+        "labels": {
+          "app": "jenkins-jos-s2i"
+        }
+      },
+      "spec": {},
+      "status": {}
+    },
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "jenkins-jos-s2i",
+        "labels": {
+          "app": "jenkins-jos-s2i"
+        }
+      },
+      "spec": {
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChange": {}
+          }
+        ],
+        "runPolicy": "Serial",
+        "source": {
+          "type": "Git",
+          "git": {
+            "uri": "${SOURCE_REPOSITORY_URL}"
+          },
+          "contextDir": "${CONTEXT_DIR}"
+        },
+        "strategy": {
+          "type": "Source",
+          "sourceStrategy": {
+            "from": {
+              "kind": "ImageStreamTag",
+              "namespace": "openshift",
+              "name": "jenkins:2"
+            }
+          }
+        },
+        "output": {
+          "to": {
+            "kind": "ImageStreamTag",
+            "name": "jenkins-jos-s2i:latest"
+          }
+        },
+        "resources": {},
+        "postCommit": {}
+      },
+      "status": {}
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "jenkins",
+        "creationTimestamp": null
+      },
+      "spec": {
+        "strategy": {
+          "type": "Rolling",
+          "rollingParams": {
+            "updatePeriodSeconds": 1,
+            "intervalSeconds": 1,
+            "timeoutSeconds": 600,
+            "maxUnavailable": "25%",
+            "maxSurge": "25%"
+          },
+          "resources": {}
+        },
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "automatic": true,
+              "containerNames": [
+                "jenkins-jos-s2i"
+              ],
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "jenkins-jos-s2i:latest"
+              },
+              "lastTriggeredImage": ""
+            }
+          }
+        ],
+        "replicas": 1,
+        "selector": {
+          "name": "jenkins"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "name": "jenkins"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "jenkins-jos-s2i-data",
+                "emptyDir": {
+                  "medium": ""
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "jenkins-jos-s2i",
+                "image": " ",
+                "ports": [
+                  {
+                    "containerPort": 50000,
+                    "protocol": "TCP"
+                  },
+                  {
+                    "containerPort": 8080,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "OPENSHIFT_ENABLE_OAUTH",
+                    "value": "${ENABLE_OAUTH}"
+                  },
+                  {
+                    "name": "JNLP_SERVICE_NAME",
+                    "value": "jenkins-jnlp"
+                  }
+                ],
+                "resources": {},
+                "volumeMounts": [
+                  {
+                    "name": "jenkins-jos-s2i-data",
+                    "mountPath": "/var/lib/jenkins"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "imagePullPolicy": "Always"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              "capabilities": {},
+              "privileged": false
+            }
+          }
+        }
+      },
+      "status": {}
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "jenkins",
+        "annotations": {
+          "service.alpha.openshift.io/dependencies": "[{\"name\":\"jenkins-jnlp\",\"namespace\":\"\",\"kind\":\"Service\"}]",
+          "service.openshift.io/infrastructure": "true"
+        },
+        "creationTimestamp": null
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "web",
+            "protocol": "TCP",
+            "port": 80,
+            "targetPort": 8080
+          }
+        ],
+        "selector": {
+          "name": "jenkins"
+        },
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      }
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "jenkins-jnlp"
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "agent",
+            "protocol": "TCP",
+            "port": 50000,
+            "targetPort": 50000,
+            "nodePort": 0
+          }
+        ],
+        "selector": {
+          "name": "jenkins"
+        },
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      }
+    },
+    {
+      "kind": "Route",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "jenkins-jos-s2i"
+      },
+      "spec": {
+        "to": {
+          "kind": "Service",
+          "name": "jenkins",
+          "weight": 100
+        },
+        "port": {
+          "targetPort": "web"
+        }
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "name": "ENABLE_OAUTH",
+      "displayName": "Enable OAuth in Jenkins",
+      "description": "Whether to enable OAuth OpenShift integration. If false, the static account 'admin' will be initialized with the password 'password'.",
+      "value": "false"
+    },
+    {
+      "name": "CONTEXT_DIR",
+      "displayName": "Path within Git",
+      "description": "Path within Git project to build; empty for root project directory.",
+      "value": "jenkins-master"
+    },
+    {
+      "name": "SOURCE_REPOSITORY_URL",
+      "displayName": "Path within Git",
+      "description": "Path within Git project to build; empty for root project directory.",
+      "value": "https://github.com/jr00n/jenkins-jos-os.git"
+    }
+  ]
+}
