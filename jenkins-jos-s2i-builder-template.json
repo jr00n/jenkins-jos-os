@@ -9,10 +9,7 @@
       "kind": "ImageStream",
       "apiVersion": "v1",
       "metadata": {
-        "name": "jenkins-jos-s2i",
-        "labels": {
-          "app": "jenkins-jos-s2i"
-        }
+        "name": "jenkins-jos"
       },
       "spec": {},
       "status": {}
@@ -21,10 +18,7 @@
       "kind": "BuildConfig",
       "apiVersion": "v1",
       "metadata": {
-        "name": "jenkins-jos-s2i",
-        "labels": {
-          "app": "jenkins-jos-s2i"
-        }
+        "name": "jenkins-jos-s2i"
       },
       "spec": {
         "triggers": [
@@ -57,7 +51,7 @@
         "output": {
           "to": {
             "kind": "ImageStreamTag",
-            "name": "jenkins-jos-s2i:latest"
+            "name": "jenkins-jos:latest"
           }
         },
         "resources": {},
@@ -97,7 +91,7 @@
               ],
               "from": {
                 "kind": "ImageStreamTag",
-                "name": "jenkins-jos-s2i:latest"
+                "name": "jenkins-jos:latest"
               },
               "lastTriggeredImage": ""
             }
@@ -115,6 +109,7 @@
             }
           },
           "spec": {
+            "serviceAccountName": "jenkins",
             "volumes": [
               {
                 "name": "jenkins-jos-s2i-data",
@@ -235,6 +230,33 @@
         "port": {
           "targetPort": "web"
         }
+      }
+    },
+    {
+      "kind": "ServiceAccount",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "jenkins",
+        "annotations": {
+          "serviceaccounts.openshift.io/oauth-redirectreference.jenkins": "{\"kind\":\"OAuthRedirectReference\",\"apiVersion\":\"v1\",\"reference\":{\"kind\":\"Route\",\"name\":\"${JENKINS_SERVICE_NAME}\"}}"
+        }
+      }
+    },
+    {
+      "kind": "RoleBinding",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "jenkins_edit"
+      },
+      "groupNames": null,
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "jenkins"
+        }
+      ],
+      "roleRef": {
+        "name": "edit"
       }
     }
   ],
