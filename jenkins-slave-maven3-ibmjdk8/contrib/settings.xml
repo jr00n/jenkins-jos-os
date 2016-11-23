@@ -12,6 +12,15 @@
   </proxies>
 
   <profiles>
+
+    <!-- Java Ontwikkel Straat -->
+    <profile>
+        <id>jos</id>
+        <properties>
+          <IBM_JDK_80>/opt/ibm/java/bin/</IBM_JDK_80>
+        </properties>
+    </profile>
+
     <!-- Override the repository "central" from the Maven Super POM, to set HTTPS by default -->
     <profile>
       <id>securecentral</id>
@@ -61,5 +70,6 @@
   </profiles>
   <activeProfiles>
     <activeProfile>securecentral</activeProfile>
+    <activeProfile>jos</activeProfile>
   </activeProfiles>
 </settings>

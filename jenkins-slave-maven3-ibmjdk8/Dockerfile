@@ -6,7 +6,7 @@ ENV JAVA_VERSION 1.8.0_sr3fp20
 ENV MAVEN_VERSION=3.3.9
 
 # Install Maven
-RUN INSTALL_PKGS="java-1.8.0-openjdk-devel" && \
+RUN INSTALL_PKGS="java-1.8.0-openjdk-devel wget" && \
     yum install -y --enablerepo=centosplus $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y && \
