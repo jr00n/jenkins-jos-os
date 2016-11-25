@@ -1,0 +1,56 @@
+  {
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+      "name": "jenkins-slave-maven3-ibmjdk8"
+    },
+    "objects": [
+      {
+        "kind": "ImageStream",
+        "apiVersion": "v1",
+        "metadata": {
+          "name": "jenkins-slave-maven3-ibmjdk8"
+        },
+        "spec": {},
+        "status": {}
+      },
+      {
+        "kind": "BuildConfig",
+        "apiVersion": "v1",
+        "metadata": {
+          "name": "jenkins-slave-maven3-ibmjdk8"
+        },
+        "spec": {
+          "triggers": [
+            {
+              "type": "ConfigChange"
+            },
+            {
+              "type": "ImageChange",
+              "imageChange": {}
+            }
+          ],
+          "runPolicy": "Serial",
+          "source": {
+            "type": "Git",
+            "git": {
+              "uri": "https://github.com/jr00n/jenkins-jos-os"
+            },
+            "contextDir": "jenkins-slave-maven3-ibmjdk8"
+          },
+          "strategy": {
+            "type": "Docker",
+            "dockerStrategy": {}
+          },
+          "output": {
+            "to": {
+              "kind": "ImageStreamTag",
+              "name": "jenkins-slave-maven3-ibmjdk8:latest"
+            }
+          },
+          "resources": {},
+          "postCommit": {}
+        }
+      }
+    ]
+  }
