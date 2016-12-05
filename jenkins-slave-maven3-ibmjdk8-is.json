@@ -8,7 +8,7 @@
       "role": "jenkins-slave"
     },
     "annotations": {
-      "label": "maven-ibmjdk8",
+      "slave-label": "maven-ibmjdk8",
       "slave-directory": "/tmp"
     }
   },
