@@ -9,7 +9,15 @@
         "kind": "ImageStream",
         "apiVersion": "v1",
         "metadata": {
-          "name": "jenkins-slave-maven3-ibmjdk8"
+          "name": "jenkins-slave-maven3-ibmjdk8",
+          "labels": {
+            "app": "jenkins-slave-maven3-ibmjdk8",
+            "role": "jenkins-slave"
+          },
+          "annotations": {
+            "slave-label": "maven-ibmjdk8",
+            "slave-directory": "/tmp"
+          }
         },
         "spec": {},
         "status": {}
