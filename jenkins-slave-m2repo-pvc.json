@@ -1,0 +1,20 @@
+{
+  "kind": "PersistentVolumeClaim",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "m2repo",
+    "namespace": "team-a"
+  },
+  "spec": {
+    "accessModes": [
+      "ReadWriteMany"
+    ],
+    "resources": {
+      "requests": {
+        "storage": "2Gi"
+      }
+    },
+    "volumeName": "pv01"
+  },
+  "status": {}
+}
