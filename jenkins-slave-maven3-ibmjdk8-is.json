@@ -12,6 +12,21 @@
       "slave-directory": "/tmp"
     }
   },
-  "spec": {},
+  "spec": {
+    "tags": [
+      {
+        "name": "latest",
+        "annotations": {
+          "openshift.io/display-name": "Jenkins Build Slave",
+          "description": "Provides a Jenkins slave node with Maven3 and IBM JDK 8 and OpenShift OC client."
+        },
+        "from": {
+          "kind": "ImageStreamTag",
+          "namespace":"jos",
+          "name": "jenkins-slave-maven3-ibmjdk8:latest"
+        }
+      }
+    ]
+  },
   "status": {}
 }
