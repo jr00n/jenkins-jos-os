@@ -82,7 +82,7 @@
                   "env": [
                     {
                       "name": "OPENSHIFT_ENABLE_OAUTH",
-                      "value": "true"
+                      "value": "false"
                     },
                     {
                       "name": "JNLP_SERVICE_NAME",
