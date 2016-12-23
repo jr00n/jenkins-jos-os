@@ -4,6 +4,17 @@
     "metadata": {
         "name": "jenkins-jos-s2i"
     },
+    "parameters": [{
+        "name": "SOURCE_REPOSITORY_URL",
+        "displayName": "Path within Git",
+        "description": "Path within Git project to build; empty for root project directory.",
+        "value": "https://github.com/jr00n/jenkins-jos-os.git"
+    }, {
+        "name": "CONTEXT_DIR",
+        "displayName": "Path within Git",
+        "description": "Path within Git project to build; empty for root project directory.",
+        "value": "jenkins-master"
+    }],
     "objects": [{
         "kind": "ImageStream",
         "apiVersion": "v1",
@@ -53,20 +64,5 @@
             "postCommit": {}
         },
         "status": {}
-    }],
-    "parameters":
-    [
-      {
-        "name": "SOURCE_REPOSITORY_URL",
-        "displayName": "Path within Git",
-        "description": "Path within Git project to build; empty for root project directory.",
-        "value": "https://github.com/jr00n/jenkins-jos-os.git"
-      },
-      {
-        "name": "CONTEXT_DIR",
-        "displayName": "Path within Git",
-        "description": "Path within Git project to build; empty for root project directory.",
-        "value": "jenkins-master"
-      }
-    ]
+    }]
 }
