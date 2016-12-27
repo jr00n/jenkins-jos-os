@@ -63,6 +63,10 @@
                   "persistentVolumeClaim": {
                     "claimName": "jenkins"
                   }
+                },
+                {
+                  "name": "jenkins-plugins",
+                  "emptyDir": {}   
                 }
               ],
               "containers": [
@@ -98,6 +102,10 @@
                     {
                       "name": "jenkins-data",
                       "mountPath": "/var/lib/jenkins"
+                    },
+                    {
+                      "name": "jenkins-plugins",
+                      "mountPath": "/var/lib/jenkins/plugins"
                     }
                   ],
                   "terminationMessagePath": "/dev/termination-log",
