@@ -1,3 +1,0 @@
-greenballs:1.15
-kubernetes:0.8
-swarm:2.2
