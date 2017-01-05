@@ -20,12 +20,12 @@ fi
 
 if [ -d ${JENKINS_INSTALL_DIR}/plugins ]; then
   echo "---> Installing $(ls -l ${JENKINS_INSTALL_DIR}/plugins | grep ^- | wc -l) Jenkins plugins from plugins/ directory ..."
-  
 
-   pushd ${JENKINS_INSTALL_DIR}/plugins
-   for f in *.hpi; do export fname=`echo "$f" | cut -d'.' -f1`; echo "Removing previous version of plugins.."; echo $fname; rm ${JENKINS_DIR}/plugins/$fname.jpi; rm ${JENKINS_DIR}/plugins/$fname.hpi; done
-   popd
-   
+
+   pushd ${JENKINS_INSTALL_DIR}/plugins > /dev/null
+   for f in *.hpi; do export fname=`echo "$f" | cut -d'.' -f1`; echo "Removing previous version of plugins.."; echo $fname; rm ${JENKINS_DIR}/plugins/$fname.jpi 2> /dev/null; rm ${JENKINS_DIR}/plugins/$fname.hpi 2> /dev/null; done
+   popd > /dev/null
+
   cp -R ${JENKINS_INSTALL_DIR}/plugins/* ${JENKINS_DIR}/plugins/
   /usr/local/bin/fix-permissions ${JENKINS_DIR}/plugins
 fi
